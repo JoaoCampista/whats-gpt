@@ -1,4 +1,3 @@
-openai
-yowsup2
 aiohttp
 fastapi
+"uvicorn[standard]"
