@@ -1,2 +1,4 @@
 openai
 yowsup2
+aiohttp
+fastapi
