@@ -5,7 +5,6 @@ import requests
 from os.path import join, dirname
 from dotenv import load_dotenv
 import openai
-from openai_api import *
 from whatsapp_api import *
 from pydantic import BaseModel
 from typing import List, Dict
