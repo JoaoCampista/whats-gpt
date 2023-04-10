@@ -25,7 +25,6 @@ async def webhook(request: Request):
     return Response(status_code=200)
 
 
-  
 @app.post("/webhook")
 async def webhook(request: Request):
 
