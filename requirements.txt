@@ -4,3 +4,8 @@ uvicorn
 requests
 openai
 python-dotenv
+numpy
+pandas
+weaviate-client
+mysql-connector-python
+pika
