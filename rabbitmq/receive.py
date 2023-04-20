@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import pika, sys, os, time
 
 # Função callback para processar a mensagem recebida
@@ -11,6 +10,9 @@ def callback(ch, method, properties, body):
     # Envio da mensagem de retorno
     ch.basic_publish(exchange='', routing_key='retorno', body=body)
 
+    # Confirmação de recebimento da mensagem
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
 # Conexão com o servidor RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
@@ -19,7 +21,7 @@ channel = connection.channel()
 channel.queue_declare(queue='hello')
 
 # Registro do consumidor na fila
-channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+channel.basic_consume(queue='hello', on_message_callback=callback)
 
 # Início da espera por mensagens
 print('Esperando por mensagens...')
