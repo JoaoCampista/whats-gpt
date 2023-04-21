@@ -2,7 +2,8 @@ import mysql.connector
 import pika
 import uuid
 
-HOST = '192.168.0.26'
+#HOST = '192.168.0.26'
+HOST = 'localhost'
 
 mydb = mysql.connector.connect(
     host="localhost",
@@ -12,10 +13,14 @@ mydb = mysql.connector.connect(
 )
 
 def enviar_mensagem(mensagem):
+    # Gerando um identificador único para a mensagem
+    corr_id = str(uuid.uuid4())
+
+
     mycursor = mydb.cursor()
 
     sql = "INSERT INTO my_table (usuario, mensagem, retorno) VALUES (%s, %s, %s)"
-    val = (mensagem['usuario'], mensagem['mensagem'], mensagem['retorno'])
+    val = (mensagem['usuario'], corr_id, mensagem['retorno'])
     mycursor.execute(sql, val)
     mydb.commit()
     mycursor.close()
@@ -27,15 +32,13 @@ def enviar_mensagem(mensagem):
     channel = connection.channel()
 
     # Declaração da fila
-    channel.queue_declare(queue='hello')
+    channel.queue_declare(queue='my_queue_2')
 
-    # Gerando um identificador único para a mensagem
-    corr_id = str(uuid.uuid4())
 
     # Publicação da mensagem na fila com propriedade de correlação
     channel.basic_publish(
         exchange='',
-        routing_key='hello',
+        routing_key='my_queue_2',
         properties=pika.BasicProperties(
             reply_to='retorno',
             correlation_id=corr_id
@@ -51,6 +54,7 @@ def enviar_mensagem(mensagem):
 
 
 def receber_retorno(corr_id):
+    print(corr_id)
     # Conexão com o servidor RabbitMQ
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=HOST))
     channel = connection.channel()
@@ -60,9 +64,12 @@ def receber_retorno(corr_id):
 
     # Callback para recebimento da mensagem de retorno
     def on_response(ch, method, props, body):
+        print(props.correlation_id)
         if props.correlation_id == corr_id:
             print(f"Mensagem de retorno: {body}")
             ch.basic_ack(delivery_tag=method.delivery_tag)
+            # Fechamento da conexão
+            connection.close()
 
     # Subscrição à fila de retorno
     channel.basic_consume(queue='retorno', on_message_callback=on_response)
@@ -72,21 +79,21 @@ def receber_retorno(corr_id):
 
     mycursor = mydb.cursor()
     sql = "UPDATE my_table SET retorno = %s WHERE mensagem = %s"
-    val = ("Processado", 'CAVALO')
+    val = ("Processado", corr_id)
     mycursor.execute(sql, val)
     mydb.commit()
     mycursor.close()
 
-    # Fechamento da conexão
-    connection.close()
+    return 'ok'
+    
 
     # Retorno da mensagem de retorno
-    return body
+    return print('oi')
 
 if __name__ == '__main__':
     mensagem = {
-        'usuario':'CAVALO',
-        'mensagem':'ANTONIO',
+        'usuario':'pedrao',
+        'mensagem':'123123312',
         'retorno':'Waiting RabbitMQ',
     }
     a = enviar_mensagem(mensagem)
