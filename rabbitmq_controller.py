@@ -10,7 +10,7 @@ RECEIVER_QUEUE = 'my_queue'
 RETURN_QUEUE = 'retorno'
 
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="ec2-54-90-82-135.compute-1.amazonaws.com",
     user="root",
     password="my-secret-pw",
     database="my_database"
