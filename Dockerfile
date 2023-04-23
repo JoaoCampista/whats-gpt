@@ -27,4 +27,4 @@ ENV TOKEN_BOT_TELEGRAM=''
 ENV CHAT_ID_BOLSA=''
 
 # Define o comando padrão para executar o receiver
-CMD ["python", "uvicorn main:app --reload"]
+CMD ["uvicorn", "main:app", "--reload"]
