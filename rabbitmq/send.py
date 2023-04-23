@@ -32,13 +32,13 @@ def enviar_mensagem(mensagem):
     channel = connection.channel()
 
     # Declaração da fila
-    channel.queue_declare(queue='my_queue_2')
+    channel.queue_declare(queue='my_queue')
 
 
     # Publicação da mensagem na fila com propriedade de correlação
     channel.basic_publish(
         exchange='',
-        routing_key='my_queue_2',
+        routing_key='my_queue',
         properties=pika.BasicProperties(
             reply_to='retorno',
             correlation_id=corr_id

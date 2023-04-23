@@ -9,6 +9,8 @@ from whatsapp_api import *
 from pydantic import BaseModel
 from typing import List, Dict
 from telegram_api import *
+from rabbitmq_controller import *
+import asyncio
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -31,7 +33,9 @@ async def webhook(request: Request):
 
     body = await request.json()
 
-    get_whatsapp_mesage(body)
+    asyncio.create_task(enviar_mensagem(body))
+    
+    #get_whatsapp_mesage(body)
     #send_to_telegram(body)
 
     return Response(status_code=200)
