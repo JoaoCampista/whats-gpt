@@ -4,7 +4,7 @@ import uuid
 import json
 
 #HOST = '192.168.0.26'
-HOST = 'localhost'
+HOST = 'ec2-44-212-74-193.compute-1.amazonaws.com'
 
 RECEIVER_QUEUE = 'my_queue'
 RETURN_QUEUE = 'retorno'
@@ -99,7 +99,7 @@ def receber_retorno(corr_id):
         print(props.correlation_id)
         if props.correlation_id == corr_id:
 
-            message_returned = json.loads(body.decode('utf-8'), strict=False)
+            message_returned = body.decode('utf-8')
             print(message_returned)
             ch.basic_ack(delivery_tag=method.delivery_tag)
             # Fechamento da conexão
@@ -119,16 +119,3 @@ def receber_retorno(corr_id):
     mycursor.close()
 
     return 'ok'
-    
-
-    # Retorno da mensagem de retorno
-    return print('oi')
-
-if __name__ == '__main__':
-    mensagem = {
-        'usuario':'pedrao',
-        'mensagem':'123123312',
-        'retorno':'Waiting RabbitMQ',
-    }
-    a = enviar_mensagem(mensagem)
-    print(a)
