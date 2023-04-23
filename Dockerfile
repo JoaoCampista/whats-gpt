@@ -26,5 +26,8 @@ ENV VERIFY_TOKEN=''
 ENV TOKEN_BOT_TELEGRAM=''
 ENV CHAT_ID_BOLSA=''
 
-# Define o comando padrão para executar o receiver
-CMD ["uvicorn", "main:app", "--reload"]
+# Exponha a porta 8000 para o mundo externo
+EXPOSE 8000
+
+# Comando que será executado ao iniciar o contêiner
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
